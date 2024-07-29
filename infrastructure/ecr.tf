@@ -1,3 +1,3 @@
-resource "aws_ecr_repository" "ecr_repo" {
-    name = "ecr_semantic_release"
+resource "aws_ecr_repository" "this" {
+  name = "ecr_semantic_release"
 }
