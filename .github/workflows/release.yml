@@ -72,8 +72,12 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Extract version from package.json
+        id: extract_version
+        run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+
       - name: Build, tag, and push docker image to Amazon ECR Public
         run: |
-          docker build -t semantic-release . 
-          docker tag semantic-release:latest ${{ secrets.AWS_ACCESS_KEY_ID }}.dkr.ecr.eu-central-1.amazonaws.com/ecr_semantic_release:latest
-          docker push ${{ secrets.AWS_ACCESS_KEY_ID }}.dkr.ecr.eu-central-1.amazonaws.com/ecr_semantic_release:latest
+          docker build -t semantic-release:${{ env.VERSION }} . 
+          docker tag semantic-release:${{ env.VERSION }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_DEFAULT_REGION }}.amazonaws.com/ecr_semantic_release:${{ env.VERSION }}
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_DEFAULT_REGION }}.amazonaws.com/ecr_semantic_release:${{ env.VERSION }}
